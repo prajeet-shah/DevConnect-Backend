@@ -1,0 +1,21 @@
+{
+  "name": "tinder",
+  "version": "1.0.0",
+  "description": "this is tinder project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NodeJs",
+    "prajeet",
+    "shah"
+  ],
+  "author": "Prajeet Shah",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

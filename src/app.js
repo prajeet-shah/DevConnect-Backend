@@ -1,38 +1,30 @@
 const express = require("express");
-const { AdminLogin, AuthUser } = require("./middlewares/Auth");
+const connectDB = require("./config/database");
+
+const User = require("./models/user");
 const app = express();
 
-app.use("/admin", AdminLogin);
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Prajeet",
+    lastName: "Shah",
+    emailId: "prajeet@gmail.com",
+    password: "Prajeet@123",
+  });
 
-app.use("/user/login", (req, res, next) => {
-  console.log("login yourself");
-  // res.send("login yourself");
-
-  throw new Error("ssdfjlis");
-});
-
-// handling error, normally use at the last of code handle error that won't be handle by try
-// and catch
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
+  try {
+    await user.save();
+    res.send("user Added Successfully!");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.message);
   }
 });
 
-app.use("/user", AuthUser);
-
-app.use("/user/data", (req, res) => {
-  res.send("All the data here!!");
-});
-
-app.use("/admin/getAllData", (req, res) => {
-  res.send("all the data sent");
-});
-
-app.use("/admin/deleteData", (req, res) => {
-  res.send("Deleted Successfully");
-});
-
-app.listen(7777, () => {
-  console.log("server running on the port 7777");
-});
+connectDB()
+  .then(() => {
+    console.log("Database Connection Established....");
+    app.listen(7777, () => {
+      console.log("server running on the port 7777");
+    });
+  })
+  .catch((err) => console.log("Database not connected successfully!"));

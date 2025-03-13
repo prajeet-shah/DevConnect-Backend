@@ -1,28 +1,37 @@
 const express = require("express");
-
+const { AdminLogin, AuthUser } = require("./middlewares/Auth");
 const app = express();
 
-app.use("/user", [
-  (req, res, next) => {
-    console.log("response 1");
-    // res.send("hello world");
-    next();
-  },
-  (req, res, next) => {
-    console.log("response 2");
-    res.send("hello world 2");
-  },
-  (req, res, next) => {
-    console.log("response 3");
-    res.send("hello world 3");
-    next();
-  },
-  (req, res, next) => {
-    console.log("response 4");
-    res.send("hello world 4");
-    next();
-  },
-]);
+app.use("/admin", AdminLogin);
+
+app.use("/user/login", (req, res, next) => {
+  console.log("login yourself");
+  // res.send("login yourself");
+
+  throw new Error("ssdfjlis");
+});
+
+// handling error, normally use at the last of code handle error that won't be handle by try
+// and catch
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("something went wrong");
+  }
+});
+
+app.use("/user", AuthUser);
+
+app.use("/user/data", (req, res) => {
+  res.send("All the data here!!");
+});
+
+app.use("/admin/getAllData", (req, res) => {
+  res.send("all the data sent");
+});
+
+app.use("/admin/deleteData", (req, res) => {
+  res.send("Deleted Successfully");
+});
 
 app.listen(7777, () => {
   console.log("server running on the port 7777");

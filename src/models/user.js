@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+var validator = require("validator");
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -16,10 +16,22 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate: {
+        validator: function (value) {
+          return validator.isEmail(value);
+        },
+        message: (props) => `${props.value} is not a valid email address!`,
+      },
     },
     password: {
       type: String,
       required: true,
+      validate: {
+        validator: function (value) {
+          return validator.isStrongPassword(value);
+        },
+        message: (props) => `${props.value} is not strong password!`,
+      },
     },
     age: {
       type: Number,
@@ -44,6 +56,12 @@ const userSchema = new mongoose.Schema(
     photoUrl: {
       type: String,
       default: "https://www.flaticon.com/free-icon/profile_6522516",
+      validate: {
+        validator: function (value) {
+          return validator.isURL(value);
+        },
+        message: (props) => `${props.value} is not valid photo url!`,
+      },
     },
     skills: {
       type: [String],

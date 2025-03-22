@@ -58,6 +58,11 @@ userRouter.get("/user/connections", AuthUser, async (req, res) => {
 userRouter.get("/feed", AuthUser, async (req, res) => {
   try {
     const loggedInUser = req.user;
+
+    const page = req.query.page || 1;
+    let limit = req.query.limit || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
     const USER_SAFE_DATA = "firstName lastName photoUrl gender skills";
     // find all the connections
     const connnectionRequest = await ConnectionRequestModel.find({
@@ -71,7 +76,7 @@ userRouter.get("/feed", AuthUser, async (req, res) => {
       hideUserFromFeeds.add(req.toUserId.toString());
     });
 
-    console.log(hideUserFromFeeds);
+    // console.log(hideUserFromFeeds);
 
     const users = await user
       .find({
@@ -80,7 +85,9 @@ userRouter.get("/feed", AuthUser, async (req, res) => {
           { _id: { $ne: loggedInUser._id } },
         ],
       })
-      .select(USER_SAFE_DATA);
+      .select(USER_SAFE_DATA)
+      .skip(skip)
+      .limit(limit);
 
     res.json({ users });
   } catch (err) {

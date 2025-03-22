@@ -75,38 +75,38 @@ requestRouter.post(
   "/request/review/:status/:requestId",
   AuthUser,
   async (req, res) => {
-    const loggedInUser = req.user;
-    const { status, requestId } = req.params;
-
-    // check if the status is valid
-
-    const allowedStatus = ["accepted", "rejected"];
-
-    if (!allowedStatus.includes(status)) {
-      return res.status(400).json({ message: "status is not valid!" });
-    }
-
-    const connectionRequest = await ConnectionRequestModel.findOne({
-      _id: requestId,
-      toUserId: loggedInUser._id,
-      status: "interested",
-    });
-
-    if (!connectionRequest) {
-      throw new Error("cannot find the connectionRequest");
-    }
-    // loggedInUser = req.user -> toUserId
-    // status = interested
-    // check if the requestId is valid
-    connectionRequest.status = status;
-    const data = await connectionRequest.save();
-    res
-      .status(200)
-      .json([
-        { message: "request " + status + " successfully!!" },
-        { data: data },
-      ]);
     try {
+      const loggedInUser = req.user;
+      const { status, requestId } = req.params;
+
+      // check if the status is valid
+
+      const allowedStatus = ["accepted", "rejected"];
+
+      if (!allowedStatus.includes(status)) {
+        return res.status(400).json({ message: "status is not valid!" });
+      }
+
+      const connectionRequest = await ConnectionRequestModel.findOne({
+        _id: requestId,
+        toUserId: loggedInUser._id,
+        status: "interested",
+      });
+
+      if (!connectionRequest) {
+        throw new Error("cannot find the connectionRequest");
+      }
+      // loggedInUser = req.user -> toUserId
+      // status = interested
+      // check if the requestId is valid
+      connectionRequest.status = status;
+      const data = await connectionRequest.save();
+      res
+        .status(200)
+        .json([
+          { message: "request " + status + " successfully!!" },
+          { data: data },
+        ]);
     } catch (err) {
       res.status(400).json({ message: err.message });
     }

@@ -29,9 +29,13 @@ authRouter.post("/signup", async (req, res) => {
     await user.save();
 
     // create a jwt token
-    const token = await jwt.sign({ _id: user._id }, "Prajeet@gd734%", {
-      expiresIn: "7d",
-    });
+    const token = await jwt.sign(
+      { _id: user._id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "7d",
+      }
+    );
     console.log(token);
     // wrap the jwt token inside the cookies and sent it to the user
     res.cookie("token", token);
@@ -55,9 +59,13 @@ authRouter.post("/login", async (req, res) => {
     }
 
     // create a jwt token
-    const token = await jwt.sign({ _id: user._id }, "Prajeet@gd734%", {
-      expiresIn: "7d",
-    });
+    const token = await jwt.sign(
+      { _id: user._id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "7d",
+      }
+    );
     console.log(token);
     // wrap the jwt token inside the cookies and sent it to the user
     res.cookie("token", token);

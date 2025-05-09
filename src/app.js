@@ -6,7 +6,9 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
-
+const http = require("http");
+const initializeServer = require("./utils/socket");
+const chatRouter = require("./routes/chat");
 const app = express();
 
 app.use(
@@ -22,11 +24,15 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
+
+const server = http.createServer(app);
+initializeServer(server);
 
 connectDB()
   .then(() => {
     console.log("Database Connection Established....");
-    app.listen(7777, () => {
+    server.listen(7777, () => {
       console.log("server running on the port 7777");
     });
   })
